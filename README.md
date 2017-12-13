@@ -1,4 +1,4 @@
-ANTES DE COMECAR
+# ANTES DE COMECAR
 
 1. criar RG para jumpbox
 RG = uolhosting
