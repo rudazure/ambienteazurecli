@@ -1,15 +1,13 @@
-# WORKSHOP UOL HOSTING
+## WORKSHOP UOL HOSTING
 
-## DIAGRAMA
-
-## 1. acessar a vm inicial
+### 1. acessar a vm inicial
 
 1.1. acessar a VM Linux conforme info acima.
 	
 1.2. instalar o Azure CLI 2.0
 [https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest]
 	
-	para sistemas 64bits:
+	
 ```bash	
 	1.2.1.
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | \sudo tee /etc/apt/sources.list.d/azure-cli.list
@@ -35,15 +33,15 @@ az account set --subscription "<nome_subscription> ou <ID>" (para selecionar sub
 		
 	OBSERVAÇÃO: caso necessite rodar no Windows:
 		INSTALAR O BASH on ubuntu FOR WINDOWS.
-		https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3/ 
+		[https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3] 
 	
-## 2. criar via CLI o RG : rgparticipante"x"
+### 2. criar via CLI o RG : rgparticipante"x"
 
 ```bash
 az group create --name rgparticipante"x" --location eastus
 ```
 
-##3. criar via CLI a VNET, SUBNET (manag, front, back)
+### 3. criar via CLI a VNET, SUBNET (manag, front, back)
 
 3.1	criar a vnet com uma subnet inicial (chamada manag)
 	
@@ -99,7 +97,7 @@ az network vnet subnet list \
 -o table
 ```
 
-##4. criar / configurar via CLI a NSG (Network Security Group)
+### 4. criar / configurar via CLI a NSG (Network Security Group)
 
 4.1. criar a NSG
 
@@ -273,11 +271,11 @@ az network vnet subnet update \
 --network-security-group NSG-Back
 ```
 
-##5. criar via CLI as 2 vms (Win para Plesk e Linux para Cpanel) na subnet manag
+### 5. criar via CLI as 2 vms (Win para Plesk e Linux para Cpanel) na subnet manag
 
 (Esse step dependerá do UOL, caso esteja já montando um ambiente de teste com Jumpbox)
 
-##6. criar via CLI a VM Linux (para CPanel) na subnet Front
+### 6. criar via CLI a VM Linux (para CPanel) na subnet Front
 
 6.1 listando as imagens disponiveis
 ```bash
@@ -331,7 +329,7 @@ sudo apt update && sudo apt install lamp-server^
 Faça o teste acessando o ip publico da VM
 (a porta 80 para acesso via internet foi habilitada em step anterior durante criação das regras NSG da subnet)
 
-##7. criando uma VM Linux na Subnet Back para o MySQL
+### 7. criando uma VM Linux na Subnet Back para o MySQL
 
 RELEMBRANDO: 
 ATÉ AQUI CRIAMOS O RG, A VNET, A SUBNET, O NSG. 
@@ -370,7 +368,7 @@ sudo apt update && sudo apt install lamp-server^
  
 7.2 TESTAR A CONEXÃO ENTRE AS VMs das Subnets Front e Back (via ip privado)
 
-##8. criar uma Custom Image usando CLI
+### 8. criar uma Custom Image usando CLI
 
 8.1 criando custom image no windows
 
@@ -458,11 +456,11 @@ az image delete \
     --resource-group rgparticipante"x"
 ```
 
-##9. criar GW para VPN (via Portal ou CLI)
+### 9. criar GW para VPN (via Portal ou CLI)
 
 (faremos esse passo se houver tempo)
 
-##10. criar o servico backup de 1 VM em operacao (VM linux) via CLI e Portal
+### 10. criar o servico backup de 1 VM em operacao (VM linux) via CLI e Portal
 
 10.1 Criando o Vault de Backup
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vms 
@@ -501,15 +499,15 @@ chmod +x nomedoarquivo.sh
 sudo cp ~/discomontado/Volume1/var/www/html/index.nginx-debian.html /<diretório_a_ser_copiado>
 ```
 
-##11. Monitoramento básico da VM via Portal
+### 11. Monitoramento básico da VM via Portal
 
 (Explorar as opções de Métrica e Alertas)
 
-##12. Segurança (Security Center)
+### 12. Segurança (Security Center)
 
 (Explorar via Portal)
 
-##13. Outras opções dentro da VM
+### 13. Outras opções dentro da VM
 o	auto-shutdown
 o	disaster recovery (ver alternativa com ummanaged disk)
 o	redeploy
@@ -522,7 +520,7 @@ o	Azure AD Managed Service Identity
 o	Just-In-Time VM Access
 	https://azure.microsoft.com/pt-br/blog/announcing-the-just-in-time-vm-access-public-preview/ 
 	
-##14. USANDO JENKINS
+### 14. USANDO JENKINS
 
 Referência:
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-jenkins-github-docker-cicd 
@@ -641,9 +639,9 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 Continua em:
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-jenkins-github-docker-cicd 
  
-#LAB EXTRA
+## LAB EXTRA
 
-##15. criar um cluster kubernetes como exemplo
+### 15. criar um cluster kubernetes como exemplo
 
 Referência:
 https://docs.microsoft.com/pt-br/azure/aks/kubernetes-walkthrough 
@@ -658,7 +656,7 @@ kubectl get nodes
 kubectl create -f azure-vote.yml
 ```
 
-##16. criar uma arquitetura Altamente disponível com Availability Set e Load Balancer
+### 16. criar uma arquitetura Altamente disponível com Availability Set e Load Balancer
 
 Implementação de duas VMs CentOS (em um mesmo Availability Set) com servidor web Apache, usando load balancer externo com NAT para SSH (portas 50001, 50002).
 https://github.com/matiasma/azureeverywhere
