@@ -1,13 +1,10 @@
 ## WORKSHOP UOL HOSTING
 
-### 1. acessar a vm inicial
+### 1. acessar a vm inicial (ver ip e diagrama fornecido)
 
-1.1. acessar a VM Linux conforme info acima.
-	
 1.2. instalar o Azure CLI 2.0
-[https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest]
-	
-	
+https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest
+		
 ```bash	
 	1.2.1.
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | \sudo tee /etc/apt/sources.list.d/azure-cli.list
