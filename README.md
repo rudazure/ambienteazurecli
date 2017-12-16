@@ -28,11 +28,12 @@ az account list --output table (para listar todas subscriptions)
 az account set --subscription "<nome_subscription> ou <ID>" (para selecionar subscription com base no nome ou ID)
 ```
 		
-	OBSERVAÇÃO: caso necessite rodar no Windows:
-		INSTALAR O BASH on ubuntu FOR WINDOWS.
-		[https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3] 
+### OBSERVAÇÃO: 
+caso necessite rodar no Windows:
+Instalar o Bash on ubuntu FOR WINDOWS.
+https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3
 	
-### 2. criar via CLI o RG : rgparticipante"x"
+### 2. criar via CLI o RG : rgparticipante"x" (onde x é o número do participante)
 
 ```bash
 az group create --name rgparticipante"x" --location eastus
@@ -270,7 +271,7 @@ az network vnet subnet update \
 
 ### 5. criar via CLI as 2 vms (Win para Plesk e Linux para Cpanel) na subnet manag
 
-(Esse step dependerá do UOL, caso esteja já montando um ambiente de teste com Jumpbox)
+(Trabalharemos esse step durante workshop)
 
 ### 6. criar via CLI a VM Linux (para CPanel) na subnet Front
 
@@ -295,26 +296,26 @@ ENTÃO ANTES DE CRIAR A VM PRECISAMOS CRIAR A NIC E O IP PUBLICO da VM.
 
 ```bash
 
-   	 az network public-ip create --resource-group rgparticipante"x"   \
-    	 --name part1ippubfront --allocation-method dynamic --idle-timeout 4
+az network public-ip create --resource-group rgparticipante"x"   \
+--name part1ippubfront --allocation-method dynamic --idle-timeout 4
 
-   	 az network nic create \
-       	 -n part1nicnamefront \
-       	 -g rgparticipante"x" \
-        	--subnet front \
-        	--public-ip-address part1ippubfront \
-        	--vnet-name  uolhvnet"x"
+az network nic create \
+-n part1nicnamefront \
+-g rgparticipante"x" \
+--subnet front \
+--public-ip-address part1ippubfront \
+--vnet-name  uolhvnet"x"
 
 az vm create \
-  --resource-group rgparticipante"x" \
-  --name part1vmfront \
-  --image UbuntuLTS \
-  --size Standard_DS1_v2 \
-  --nics part1nicnamefront
-  --data-disk-sizes-gb 128 \
-  --admin-username participante1 \
-  --admin-password Go010101you! \
-  --authentication-type password
+--resource-group rgparticipante"x" \
+--name part1vmfront \
+--image UbuntuLTS \
+--size Standard_DS1_v2 \
+--nics part1nicnamefront
+--data-disk-sizes-gb 128 \
+--admin-username participante1 \
+--admin-password Go010101you! \
+--authentication-type password
 ```
 
   6.4 ADICIONANDO O STACK LAMP
@@ -328,36 +329,36 @@ Faça o teste acessando o ip publico da VM
 
 ### 7. criando uma VM Linux na Subnet Back para o MySQL
 
-RELEMBRANDO: 
-ATÉ AQUI CRIAMOS O RG, A VNET, A SUBNET, O NSG. 
-ENTÃO ANTES DE CRIAR A VM PRECISAMOS CRIAR A NIC E O IP PUBLICO A USAR.
+### RELEMBRANDO: 
+Até aqui criamos o rg, a vnet, a subnet, o nsg. 
+então antes de criar a vm precisamos criar a nic e o ip publico a usar.
 
 ```bash
-    az network public-ip create --resource-group rgparticipante"x"   \
-     --name part1ippubback --allocation-method dynamic --idle-timeout 4
+az network public-ip create --resource-group rgparticipante"x"   \
+--name part1ippubback --allocation-method dynamic --idle-timeout 4
 
-    az network nic create \
-        -n part1nicnameback \
-        -g rgparticipante"x" \
-        --subnet Back \
-        --public-ip-address part1ippubback \
-        --vnet-name  uolhvnet"x"
+az network nic create \
+-n part1nicnameback \
+-g rgparticipante"x" \
+--subnet Back \
+--public-ip-address part1ippubback \
+--vnet-name  uolhvnet"x"
 
 az vm create \
-  --resource-group rgparticipante"x" \
-  --name part1vmback \
-  --image UbuntuLTS \
-  --size Standard_DS1_v2 \
-  --nics part1nicname
-  --data-disk-sizes-gb 128 \ 
-  --admin-username participante1 \
-  --admin-password Go010101you! \
-  --authentication-type password
+--resource-group rgparticipante"x" \
+--name part1vmback \
+--image UbuntuLTS \
+--size Standard_DS1_v2 \
+--nics part1nicname
+--data-disk-sizes-gb 128 \ 
+--admin-username participante1 \
+--admin-password Go010101you! \
+--authentication-type password
 ```
 
-OBSERVAÇÃO: O DISCO APENAS É ADICIONADO A VM, MAS NAO É ENTREGUE FORMATADO DENTRO DO LINUX.
+### OBSERVAÇÃO: O disco apenas é adicionado a vm, mas nao é entregue formatado dentro do linux.
 
-  	7.1 ADICIONANDO O MYSQL (via stack LAMP)
+7.1 ADICIONANDO O MYSQL (via stack LAMP)
   
 ```bash
 sudo apt update && sudo apt install lamp-server^
@@ -377,25 +378,25 @@ sudo apt update && sudo apt install lamp-server^
 
 (há diferença entre Imagem Generalizada e Backup da Imagem)
 ```bash
-    	az network public-ip create --resource-group rgparticipante"x"   \
-     	--name part1destroyip --allocation-method dynamic --idle-timeout 4
+az network public-ip create --resource-group rgparticipante"x"   \
+--name part1destroyip --allocation-method dynamic --idle-timeout 4
 
-    	az network nic create \
-        	-n part1destroynic \
-        	-g rgparticipante"x" \
-        	--subnet front \
-        	--public-ip-address part1destroyip \
-       	--vnet-name  uolhvnet"x"
+az network nic create \
+-n part1destroynic \
+-g rgparticipante"x" \
+--subnet front \
+--public-ip-address part1destroyip \
+--vnet-name  uolhvnet"x"
 
 az vm create \
-  	--resource-group rgparticipante"x" \
-  	--name part1destroy \
-  	--image UbuntuLTS \
-  	--size Standard_DS1_v2 \
-  	--nics part1destroynic
-  	--admin-username participante"x" \
-  	--admin-password Go010101you! \
-  	--authentication-type password
+--resource-group rgparticipante"x" \
+--name part1destroy \
+--image UbuntuLTS \
+--size Standard_DS1_v2 \
+--nics part1destroynic
+--admin-username participante"x" \
+--admin-password Go010101you! \
+--authentication-type password
   ```
 
 8.2.2 preparando a VM para salvar a imagem
@@ -425,32 +426,32 @@ az image list \
   
 (criaremos primeiro o ip público e a NIC como nas outras VMs)
 ```bash
- az network public-ip create --resource-group rgparticipante"x"   \
-     --name vmfromimageip --allocation-method dynamic --idle-timeout 4
+az network public-ip create --resource-group rgparticipante"x"   \
+--name vmfromimageip --allocation-method dynamic --idle-timeout 4
 
-    az network nic create \
-        -n vmfromimagenic \
-        -g rgparticipante"x" \
-        --subnet front \
-        --public-ip-address vmfromimageip \
-        --vnet-name  uolhvnet"x"
+az network nic create \
+-n vmfromimagenic \
+-g rgparticipante"x" \
+--subnet front \
+--public-ip-address vmfromimageip \
+--vnet-name  uolhvnet"x"
 
 az vm create \
-  --resource-group rgparticipante"x" \
-  --name vmfromimage \
-  --image <nomedaimagem> ou <enderecodaimagem> \
-  --size Standard_DS1_v2 \
-  --nics vmfromimagenic
-  --admin-username participante"x" \
-  --admin-password Go010101you! \
-  --authentication-type password
+--resource-group rgparticipante"x" \
+--name vmfromimage \
+--image <nomedaimagem> ou <enderecodaimagem> \
+--size Standard_DS1_v2 \
+--nics vmfromimagenic
+--admin-username participante"x" \
+--admin-password Go010101you! \
+--authentication-type password
 ```
   
  8.2.5 deletando uma imagem
 ```bash
 az image delete \
-    --name <nomedaimagem> \
-    --resource-group rgparticipante"x"
+--name <nomedaimagem> \
+--resource-group rgparticipante"x"
 ```
 
 ### 9. criar GW para VPN (via Portal ou CLI)
@@ -460,7 +461,7 @@ az image delete \
 ### 10. criar o servico backup de 1 VM em operacao (VM linux) via CLI e Portal
 
 10.1 Criando o Vault de Backup
-https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vms 
+https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vms  
 
 (criado na VM Linux de Front, demonstrado no Portal)
 
@@ -508,14 +509,6 @@ sudo cp ~/discomontado/Volume1/var/www/html/index.nginx-debian.html /<diretório
 o	auto-shutdown
 o	disaster recovery (ver alternativa com ummanaged disk)
 o	redeploy
-	
-13.1 novas features (roadmap):
-	
-o	Azure AD Managed Service Identity
-	https://azure.microsoft.com/en-us/blog/keep-credentials-out-of-code-introducing-azure-ad-managed-service-identity/ 
-	
-o	Just-In-Time VM Access
-	https://azure.microsoft.com/pt-br/blog/announcing-the-just-in-time-vm-access-public-preview/ 
 	
 ### 14. USANDO JENKINS
 
@@ -656,8 +649,10 @@ kubectl create -f azure-vote.yml
 ### 16. criar uma arquitetura Altamente disponível com Availability Set e Load Balancer
 
 Implementação de duas VMs CentOS (em um mesmo Availability Set) com servidor web Apache, usando load balancer externo com NAT para SSH (portas 50001, 50002).
+
 https://github.com/matiasma/azureeverywhere
-(material criado e cedido pelo Marcelo Matias)
+
+### (material criado e cedido pelo Marcelo Matias)
 
 
 
