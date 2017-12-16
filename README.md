@@ -1,35 +1,31 @@
-#WORKSHOP UOL HOSTING
+# WORKSHOP UOL HOSTING
 
-##DIAGRAMA
+## DIAGRAMA
 
-##1. acessar a vm inicial
+## 1. acessar a vm inicial
 
 1.1. acessar a VM Linux conforme info acima.
 	
 1.2. instalar o Azure CLI 2.0
-https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest 
+[https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest]
 	
 	para sistemas 64bits:
-	
+```bash	
 	1.2.1.
-```bash
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | \sudo tee /etc/apt/sources.list.d/azure-cli.list
-```
-	 
+ 
 	1.2.2.
-```bash
 sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
 sudo apt-get install apt-transport-https
 sudo apt-get update && sudo apt-get install azure-cli
-```
-	
+
 	1.2.3. testar com o comando:
-```bash
 az
 az –version
 ```
 	
 1.3. conectar na subscricao via AZ CLI
+
 ```bash
 az login
 az account show (para verificar se está selecionado a subscription correta)
@@ -41,7 +37,7 @@ az account set --subscription "<nome_subscription> ou <ID>" (para selecionar sub
 		INSTALAR O BASH on ubuntu FOR WINDOWS.
 		https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3/ 
 	
-##2. criar via CLI o RG : rgparticipante"x"
+## 2. criar via CLI o RG : rgparticipante"x"
 
 ```bash
 az group create --name rgparticipante"x" --location eastus
