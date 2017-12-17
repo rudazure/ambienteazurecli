@@ -1,4 +1,6 @@
-1. acessar a vm inicial
+## Workshop Azure
+
+### 1. acessar a vm inicial
 
 1.1. acessar a VM Linux conforme info acima.
 	
@@ -32,10 +34,11 @@ https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-late
 
 	az login
 
-*** NÃO USAR CTRL+C e CTRL+V, SENÃO O COMANDO SERÁ ANULADO ***
+### *** NÃO USAR CTRL+C e CTRL+V, SENÃO O COMANDO SERÁ ANULADO ***
 - usar seu usuário rgparticipante”x”@outlook.com
 Senha: Go010101you!
-*** Ao voltar ao terminal, aguarde o comando completar! ***
+
+### *** Ao voltar ao terminal, aguarde o comando completar! ***
 
 	az account show (para verificar se está selecionado a subscription correta)
 
@@ -45,19 +48,19 @@ OPCIONAL:
 CASO TENHA MAIS DE UMA SUBSCRIÇÃO E A QUE PRETENDE USAR NÃO É A DEFAULT:
 	az account set --subscription "<nome_subscription> ou <ID>" (para selecionar subscription com base no nome ou ID)
 	
-OBSERVAÇÃO: caso necessite rodar no Windows:
+### OBSERVAÇÃO: caso necessite rodar no Windows:
 INSTALAR O BASH on ubuntu FOR WINDOWS.
 
 Referência:	
 https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3/ 
 	
 
-2. criar via CLI o RG : rgparticipante"x"
+### 2. criar via CLI o RG : rgparticipante"x"
 
 	az group create --name rgparticipante"x" --location eastus
 
 	
-3. criar via CLI a VNET, SUBNET (manag, front, back)
+### 3. criar via CLI a VNET, SUBNET (manag, front, back)
 
 3.1	criar a vnet com uma subnet inicial (chamada manag)
 	
@@ -103,7 +106,7 @@ Back
 	--query '[].{Name:name,CIDR:addressPrefix,Status:provisioningState}' \
 	-o table
 
-4. criar / configurar via CLI a NSG (Network Security Group)
+### 4. criar / configurar via CLI a NSG (Network Security Group)
 
 4.1. criar a NSG
 
@@ -256,9 +259,9 @@ NSG DA SUBNET BACK
 	--network-security-group NSG-Back
 
 
-6. criar via CLI a VM Linux (para CPanel) na subnet Front
+### 6. criar via CLI a VM Linux (para CPanel) na subnet Front
 
-*** a VM Windows será criada no final do Workshop. ***
+### *** a VM Windows será criada no final do Workshop. ***
 
 6.1 listando as imagens disponiveis (exemplos)
 
@@ -268,7 +271,7 @@ NSG DA SUBNET BACK
 
 	az vm image list --offer Windows --all --output table
 
-*** Utilizaremos uma imagem Ubuntu durante o workshop. ***
+### *** Utilizaremos uma imagem Ubuntu durante o workshop. ***
 
 
 6.2 listando os tamanhos de VMs disponiveis
@@ -277,12 +280,12 @@ NSG DA SUBNET BACK
 
 	ex.: Standard_A1
 
-*** Cada localidade poderá oferecer diferentes tipos de VMs. ***
+### *** Cada localidade poderá oferecer diferentes tipos de VMs. ***
 
 
 6.3 criando a VM NA SUBNET FRONT
 
-Relembrando: 
+### Relembrando: 
 Até aqui criamos o rg, a vnet, a subnet, o nsg. 
 Então antes de criar a vm precisamos criar a nic e o ip publico da vm.
 
@@ -324,9 +327,11 @@ Executar o comando:
 
 Faça o teste acessando o ip publico da VM em um browser.
 (a porta 80 para acesso via internet foi habilitada em step anterior durante criação das regras NSG da subnet)
-7. criando uma VM Linux na Subnet Back para o MySQL
 
-Relembrando mais uma vez: 
+
+### 7. criando uma VM Linux na Subnet Back para o MySQL
+
+### Relembrando mais uma vez: 
 Até aqui criamos o rg, a vnet, a subnet, o nsg. 
 Então antes de criar a vm precisamos criar a nic e o ip publico a usar.
 
@@ -352,7 +357,7 @@ Então antes de criar a vm precisamos criar a nic e o ip publico a usar.
 	--authentication-type password
 
 
-Observação: o disco apenas é adicionado a vm, mas nao é entregue formatado dentro do linux.
+### Observação: o disco apenas é adicionado a vm, mas nao é entregue formatado dentro do linux.
 
 7.1 adicionando o mysql (via stack LAMP)
   
@@ -360,10 +365,10 @@ sudo apt update && sudo apt install lamp-server^
   
 7.2 testar a conexão entre as vms das Subnets Front e Back (via ip privado)
 
-*** Não está coberto nesse workshop a configuração do MySQL. ***
+### *** Não está coberto nesse workshop a configuração do MySQL. ***
 
 
-8. criar uma Custom Image usando CLI
+### 8. criar uma Custom Image usando CLI
 
 8.2 criando custom image no linux
 
@@ -442,7 +447,7 @@ sudo apt update && sudo apt install lamp-server^
 	--name <nomedaimagem> \
 	--resource-group rgparticipante"x"
 
-10. criar o servico backup de 1 VM em operacao (VM linux) via CLI e Portal
+### 10. criar o servico backup de 1 VM em operacao (VM linux) via CLI e Portal
 
 10.1 Criando o Vault de Backup via Portal
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vms 
@@ -479,23 +484,23 @@ https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vm
 	sudo cp ~/discomontado/Volume1/var/www/html/index.nginx-debian.html /<diretório_a_ser_copiado>
 
 
-11. Monitoramento básico da VM via Portal
+### 11. Monitoramento básico da VM via Portal
 
 (Explorar as opções de Métrica e Alertas)
 
 
-12. Segurança (Security Center)
+### 12. Segurança (Security Center)
 
 (Explorar via Portal)
 
-13. Outras opções dentro da VM
+### 13. Outras opções dentro da VM
 o	auto-shutdown
 o	disaster recovery (ver alternativa com ummanaged disk)
 o	redeploy
 	
-LABs EXTRA
+## LABs EXTRA
 
-14. criar uma VM Windows
+### 14. criar uma VM Windows
 
 	az network public-ip create --resource-group rgparticipante"x"   \
 	--name pip-win”x” --allocation-method dynamic --idle-timeout 4
@@ -520,17 +525,17 @@ LABs EXTRA
 	--authentication-type password
 
 
-15. criar uma Imagem baseada em Windows Server
+### 15. criar uma Imagem baseada em Windows Server
 
 Referência:
 https://docs.microsoft.com/pt-br/azure/virtual-machines/windows/tutorial-custom-images
 
-16. criar um cluster kubernetes como exemplo
+### 16. criar um cluster kubernetes como exemplo
 
 Referência:
 https://docs.microsoft.com/pt-br/azure/aks/kubernetes-walkthrough 
 
-17. adicionando Role customizado:
+### 17. adicionando Role customizado:
 
 Logando via Powershell
 
@@ -554,7 +559,7 @@ Logando via Powershell
 Referência:
 https://docs.microsoft.com/en-us/azure/active-directory/role-based-access-control-create-custom-roles-for-internal-external-users
 
-18. criar uma arquitetura Altamente disponível com Availability Set e Load Balancer
+### 18. criar uma arquitetura Altamente disponível com Availability Set e Load Balancer
 (ver figura)
 
 Implementação de duas VMs CentOS (em um mesmo Availability Set) com servidor web Apache, usando load balancer externo com NAT para SSH (portas 50001, 50002).
@@ -562,12 +567,12 @@ https://github.com/matiasma/azureeverywhere
 (material criado e cedido pelo Marcelo Matias)
 
 
-19. Criar um VPN Gateway e configurar uma conexão P2S (Point to Site)
+### 19. Criar um VPN Gateway e configurar uma conexão P2S (Point to Site)
 
 Referência:
 https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-howto-point-to-site-resource-manager-portal 
 
-20. USANDO JENKINS
+### 20. USANDO JENKINS
 
 Referência:
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-jenkins-github-docker-cicd 
@@ -676,7 +681,7 @@ CONTEÚDO DO ARQUIVO:
 
 	sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
-Continua em:
+### Continua em:
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-jenkins-github-docker-cicd 
 
 
