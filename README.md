@@ -1,11 +1,9 @@
-## Workshop Azure
-
-### 1. acessar a vm inicial
+1. acessar a vm inicial
 
 1.1. acessar a VM Linux conforme info acima.
 	
 1.2. instalar o Azure CLI 2.0
-	```bash
+	
 	para sistemas 64bits:
 	
 	1.2.1.
@@ -25,20 +23,19 @@ sudo apt-get update && sudo apt-get install azure-cli
 az
 
 az –version
-```
+
 Referência:
 https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest 
 
+
 	1.3. conectar na subscricao via AZ CLI
 
-```bash
 az login
 
- *** NÃO USAR CTRL+C e CTRL+V, SENÃO O COMANDO SERÁ ANULADO ***
+*** NÃO USAR CTRL+C e CTRL+V, SENÃO O COMANDO SERÁ ANULADO ***
 - usar seu usuário rgparticipante”x”@outlook.com
 Senha: Go010101you!
-
- *** Ao voltar ao terminal, aguarde o comando completar! ***
+*** Ao voltar ao terminal, aguarde o comando completar! ***
 
 az account show (para verificar se está selecionado a subscription correta)
 
@@ -48,15 +45,14 @@ az account list --output table (caso queira listar todas subscriptions)
 CASO TENHA MAIS DE UMA SUBSCRIÇÃO E A QUE PRETENDE USAR NÃO É A DEFAULT:
 az account set --subscription "<nome_subscription> ou <ID>" (para selecionar subscription com base no nome ou ID)
 	
-	```
-	### OBSERVAÇÃO: caso necessite rodar no Windows:
+	OBSERVAÇÃO: caso necessite rodar no Windows:
 	INSTALAR O BASH on ubuntu FOR WINDOWS.
 
 Referência:	
 https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3/ 
 	
 
-### 2. criar via CLI o RG : rgparticipante"x"
+2. criar via CLI o RG : rgparticipante"x"
 
 az group create --name rgparticipante"x" --location eastus
 
@@ -64,8 +60,7 @@ az group create --name rgparticipante"x" --location eastus
 3. criar via CLI a VNET, SUBNET (manag, front, back)
 
 3.1	criar a vnet com uma subnet inicial (chamada manag)
-
-```bash
+	
 az network vnet create \
 --name uolhvnet"x"   \
 --resource-group rgparticipante"x" \
@@ -107,11 +102,9 @@ az network vnet subnet list \
 --vnet-name uolhvnet"x" \
 --query '[].{Name:name,CIDR:addressPrefix,Status:provisioningState}' \
 -o table
-```
 
-### 4. criar / configurar via CLI a NSG (Network Security Group)
+4. criar / configurar via CLI a NSG (Network Security Group)
 
-```bash
 4.1. criar a NSG
 
 para a subnet manag
@@ -262,13 +255,11 @@ az network vnet subnet update \
 --resource-group rgparticipante"x" \
 --network-security-group NSG-Back
 
-```
 
-### 6. criar via CLI a VM Linux (para CPanel) na subnet Front
+6. criar via CLI a VM Linux (para CPanel) na subnet Front
 
 *** a VM Windows será criada no final do Workshop. ***
 
-```bash
 6.1 listando as imagens disponiveis (exemplos)
 
 az vm image list --offer Ubuntu --all --output table
@@ -287,7 +278,7 @@ az vm list-sizes --location eastus --output table
 ex.: Standard_A1
 
 *** Cada localidade poderá oferecer diferentes tipos de VMs. ***
-```
+
 
 6.3 criando a VM NA SUBNET FRONT
 
@@ -295,7 +286,6 @@ Relembrando:
 Até aqui criamos o rg, a vnet, a subnet, o nsg. 
 Então antes de criar a vm precisamos criar a nic e o ip publico da vm.
 
-```bash
 az network public-ip create --resource-group rgparticipante"x"   \
 --name pip-frontpart”x” --allocation-method dynamic --idle-timeout 4
 
@@ -316,7 +306,6 @@ az vm create \
 --admin-username participante”x” \
 --admin-password Go010101you! \
 --authentication-type password
-```
 
 Após criação da VM Linux, acessá-la através de seu ip público.  
 Você poderá anotar o ip público ao final da execução do comando ou rodar o comando CLI:
@@ -335,14 +324,12 @@ sudo apt update && sudo apt install lamp-server^
 
 Faça o teste acessando o ip publico da VM em um browser.
 (a porta 80 para acesso via internet foi habilitada em step anterior durante criação das regras NSG da subnet)
-
-### 7. criando uma VM Linux na Subnet Back para o MySQL
+7. criando uma VM Linux na Subnet Back para o MySQL
 
 Relembrando mais uma vez: 
 Até aqui criamos o rg, a vnet, a subnet, o nsg. 
 Então antes de criar a vm precisamos criar a nic e o ip publico a usar.
 
-```bash
 az network public-ip create --resource-group rgparticipante"x"   \
 --name pip-backpart”x” --allocation-method dynamic --idle-timeout 4
 
@@ -363,9 +350,9 @@ az vm create \
 --admin-username participante”x” \
 --admin-password Go010101you! \
 --authentication-type password
-```
 
-### Observação: o disco apenas é adicionado a vm, mas nao é entregue formatado dentro do linux.
+
+Observação: o disco apenas é adicionado a vm, mas nao é entregue formatado dentro do linux.
 
   	7.1 adicionando o mysql (via stack LAMP)
   
@@ -384,7 +371,6 @@ sudo apt update && sudo apt install lamp-server^
 
 (há diferença entre Imagem Generalizada e Backup da Imagem)
 
-```bash
 az network public-ip create --resource-group rgparticipante"x"   \
 --name pip-destroy”x” --allocation-method dynamic --idle-timeout 4
 
@@ -449,7 +435,7 @@ az vm create \
   --admin-password Go010101you! \
   --authentication-type password
   
- ```
+ 
 
 8.2.5 deletando uma imagem
 
@@ -565,16 +551,7 @@ New-AzureRmRoleDefinition -Role $role
 Get-AzureRmRoleDefinition | FT Name, Description
 
 18. criar uma arquitetura Altamente disponível com Availability Set e Load Balancer
-
-
-
-
-
-
-
-
-
-
+(ver figura)
 
 Implementação de duas VMs CentOS (em um mesmo Availability Set) com servidor web Apache, usando load balancer externo com NAT para SSH (portas 50001, 50002).
 https://github.com/matiasma/azureeverywhere
