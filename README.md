@@ -1,48 +1,70 @@
-## WORKSHOP UOL HOSTING
+## Workshop Azure
 
-### 1. acessar a vm inicial (ver ip e diagrama fornecido)
+### 1. acessar a vm inicial
 
+1.1. acessar a VM Linux conforme info acima.
+	
 1.2. instalar o Azure CLI 2.0
-https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest
-		
-```bash	
+	```bash
+	para sistemas 64bits:
+	
 	1.2.1.
+
 echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ wheezy main" | \sudo tee /etc/apt/sources.list.d/azure-cli.list
- 
+	 
 	1.2.2.
+
 sudo apt-key adv --keyserver packages.microsoft.com --recv-keys 52E16F86FEE04B979B07E28DB02C46DF417A0893
+
 sudo apt-get install apt-transport-https
+
 sudo apt-get update && sudo apt-get install azure-cli
 
 	1.2.3. testar com o comando:
+
 az
+
 az –version
 ```
-	
-1.3. conectar na subscricao via AZ CLI
+Referência:
+https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli?view=azure-cli-latest 
+
+	1.3. conectar na subscricao via AZ CLI
 
 ```bash
 az login
+
+ *** NÃO USAR CTRL+C e CTRL+V, SENÃO O COMANDO SERÁ ANULADO ***
+- usar seu usuário rgparticipante”x”@outlook.com
+Senha: Go010101you!
+
+ *** Ao voltar ao terminal, aguarde o comando completar! ***
+
 az account show (para verificar se está selecionado a subscription correta)
-az account list --output table (para listar todas subscriptions)
+
+OPCIONAL:
+az account list --output table (caso queira listar todas subscriptions)
+
+CASO TENHA MAIS DE UMA SUBSCRIÇÃO E A QUE PRETENDE USAR NÃO É A DEFAULT:
 az account set --subscription "<nome_subscription> ou <ID>" (para selecionar subscription com base no nome ou ID)
-```
-		
-### OBSERVAÇÃO: 
-caso necessite rodar no Windows:
-Instalar o Bash on ubuntu FOR WINDOWS.
-https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3
 	
-### 2. criar via CLI o RG : rgparticipante"x" (onde x é o número do participante)
+	```
+	### OBSERVAÇÃO: caso necessite rodar no Windows:
+	INSTALAR O BASH on ubuntu FOR WINDOWS.
 
-```bash
+Referência:	
+https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-windows-download-now-3/ 
+	
+
+### 2. criar via CLI o RG : rgparticipante"x"
+
 az group create --name rgparticipante"x" --location eastus
-```
 
-### 3. criar via CLI a VNET, SUBNET (manag, front, back)
+	
+3. criar via CLI a VNET, SUBNET (manag, front, back)
 
 3.1	criar a vnet com uma subnet inicial (chamada manag)
-	
+
 ```bash
 az network vnet create \
 --name uolhvnet"x"   \
@@ -51,43 +73,35 @@ az network vnet create \
 --address-prefix 192.168.0.0/16 \
 --subnet-name manag \
 --subnet-prefix 192.168.1.0/24
-```
 
 3.2 adicionar outras subnets via CLI
 
 Front
 
-```bash
 az network vnet subnet create \
 --address-prefix 192.168.2.0/24 \
 --name front \
 --resource-group rgparticipante"x" \
 --vnet-name uolhvnet"x"
-```
 
 Back
 
-```bash
 az network vnet subnet create \
 --address-prefix 192.168.3.0/24 \
 --name back \
 --resource-group rgparticipante"x" \
 --vnet-name uolhvnet"x"
-```
 
 3.3 verificando sua nova vnet
 
-```bash
 az network vnet show \
 -g rgparticipante"x" \
 -n uolhvnet"x" \
 --query '{Name:name,Where:location,Group:resourceGroup,Status:provisioningState,SubnetCount:subnets | length(@)}' \
 -o table
-```
 
 3.4. verificando detalhes da subnet
 
-```bash
 az network vnet subnet list \
 -g rgparticipante"x" \
 --vnet-name uolhvnet"x" \
@@ -97,50 +111,42 @@ az network vnet subnet list \
 
 ### 4. criar / configurar via CLI a NSG (Network Security Group)
 
+```bash
 4.1. criar a NSG
 
 para a subnet manag
 
-```bash
 az network nsg create \
 --resource-group rgparticipante"x" \
 --name NSG-manag \
 --location eastus
-```
 
 para a subnet front
 
-```bash
 az network nsg create \
 --resource-group rgparticipante"x" \
 --name NSG-front \
 --location eastus
-```
 
 para a subnet back
 
-```bash
 az network nsg create \
 --resource-group rgparticipante"x" \
 --name NSG-back \
 --location eastus
-```
 
-4.2 conferindo as regras default
+4.2 conferindo as regras default do NSG (para a NSG Front)
 
-```bash
 az network nsg show \
 -g rgparticipante"x" \
 -n nsg-front \
 --query 'defaultSecurityRules[].{Access:access,Desc:description,DestPortRange:destinationPortRange,Direction:direction,Priority:priority}' \
 -o table
-```
 
 4.3 adicionando as regras necessárias para cada NSG
 
 RDP para subnet Front
 
-```bash
 az network nsg rule create \
 --resource-group rgparticipante"x" \
 --nsg-name NSG-Front \
@@ -153,11 +159,9 @@ az network nsg rule create \
 --source-port-range "*" \
 --destination-address-prefix "*" \
 --destination-port-range 3389
-```
 
 SSH para subnet Front
 
-```bash
 az network nsg rule create \
 --resource-group rgparticipante"x" \
 --nsg-name NSG-Front \
@@ -170,11 +174,9 @@ az network nsg rule create \
 --source-port-range "*" \
 --destination-address-prefix "*" \
 --destination-port-range 22
-```
 
 SSH para subnet Backend
 
-```bash
 az network nsg rule create \
 --resource-group rgparticipante"x" \
 --nsg-name NSG-Back \
@@ -187,11 +189,9 @@ az network nsg rule create \
 --source-port-range "*" \
 --destination-address-prefix "*" \
 --destination-port-range 22
-```
 
 RDP para a subnet Manag
 
-```bash
 az network nsg rule create \
 --resource-group rgparticipante"x" \
 --nsg-name NSG-manag \
@@ -204,11 +204,9 @@ az network nsg rule create \
 --source-port-range "*" \
 --destination-address-prefix "*" \
 --destination-port-range 3389
-```
 
 SSH para subnet manag
 
-```bash
 az network nsg rule create \
 --resource-group rgparticipante"x" \
 --nsg-name NSG-manag \
@@ -221,11 +219,10 @@ az network nsg rule create \
 --source-port-range "*" \
 --destination-address-prefix "*" \
 --destination-port-range 22
-```
+
 
 HTTP para a subnet Front
 
-```bash
 az network nsg rule create \
 --resource-group rgparticipante"x" \
 --nsg-name NSG-Front \
@@ -238,238 +235,240 @@ az network nsg rule create \
 --source-port-range "*" \
 --destination-address-prefix "*" \
 --destination-port-range 80
-```
 
 4.4 BIND THE NSG TO SUBNET
 
 NSG DA SUBNET MANAG
-```bash
+
 az network vnet subnet update \
 --vnet-name uolhvnet"x" \
 --name manag \
 --resource-group rgparticipante"x" \
 --network-security-group NSG-manag
-```
 
 NSG DA SUBNET FRONT
-```bash
+
 az network vnet subnet update \
 --vnet-name uolhvnet"x" \
 --name Front \
 --resource-group rgparticipante"x" \
 --network-security-group NSG-Front
-```
 
 NSG DA SUBNET BACK
-```bash
+
 az network vnet subnet update \
 --vnet-name uolhvnet"x" \
 --name Back \
 --resource-group rgparticipante"x" \
 --network-security-group NSG-Back
+
 ```
-
-### 5. criar via CLI as 2 vms (Win para Plesk e Linux para Cpanel) na subnet manag
-
-(Trabalharemos esse step durante workshop)
 
 ### 6. criar via CLI a VM Linux (para CPanel) na subnet Front
 
-6.1 listando as imagens disponiveis
+*** a VM Windows será criada no final do Workshop. ***
+
 ```bash
-az vm image list --offer CentOS --all --output table
-```
+6.1 listando as imagens disponiveis (exemplos)
+
+az vm image list --offer Ubuntu --all --output table
+
+az vm image list --offer CentOs --all --output table
+
+az vm image list --offer Windows --all --output table
+
+*** Utilizaremos uma imagem Ubuntu durante o workshop. ***
+
 
 6.2 listando os tamanhos de VMs disponiveis
 
-```bash
 az vm list-sizes --location eastus --output table
-```
 
 ex.: Standard_A1
 
+*** Cada localidade poderá oferecer diferentes tipos de VMs. ***
+```
+
 6.3 criando a VM NA SUBNET FRONT
 
-RELEMBRANDO: 
-ATÉ AQUI CRIAMOS O RG, A VNET, A SUBNET, O NSG. 
-ENTÃO ANTES DE CRIAR A VM PRECISAMOS CRIAR A NIC E O IP PUBLICO da VM.
+Relembrando: 
+Até aqui criamos o rg, a vnet, a subnet, o nsg. 
+Então antes de criar a vm precisamos criar a nic e o ip publico da vm.
 
 ```bash
-
 az network public-ip create --resource-group rgparticipante"x"   \
---name part1ippubfront --allocation-method dynamic --idle-timeout 4
+--name pip-frontpart”x” --allocation-method dynamic --idle-timeout 4
 
 az network nic create \
--n part1nicnamefront \
+-n nic-frontpart”x” \
 -g rgparticipante"x" \
 --subnet front \
---public-ip-address part1ippubfront \
+--public-ip-address pip-vmpart”x” \
 --vnet-name  uolhvnet"x"
 
 az vm create \
 --resource-group rgparticipante"x" \
---name part1vmfront \
+--name vmfront”x” \
 --image UbuntuLTS \
 --size Standard_DS1_v2 \
---nics part1nicnamefront
+--nics nic-vmpart”x” \
 --data-disk-sizes-gb 128 \
---admin-username participante1 \
+--admin-username participante”x” \
 --admin-password Go010101you! \
 --authentication-type password
 ```
 
-  6.4 ADICIONANDO O STACK LAMP
+Após criação da VM Linux, acessá-la através de seu ip público.  
+Você poderá anotar o ip público ao final da execução do comando ou rodar o comando CLI:
 
-```bash
+az network public-ip list --resource-group rgparticipante"x" --query [].ipAddress
+
+6.4 adicionando o apache via stack lamp
+
+Conectar na nova VM criada:
+
+ssh participante”x”@<ip_público>
+
+Executar o comando:
+
 sudo apt update && sudo apt install lamp-server^
-```
 
-Faça o teste acessando o ip publico da VM
+Faça o teste acessando o ip publico da VM em um browser.
 (a porta 80 para acesso via internet foi habilitada em step anterior durante criação das regras NSG da subnet)
 
 ### 7. criando uma VM Linux na Subnet Back para o MySQL
 
-### RELEMBRANDO: 
+Relembrando mais uma vez: 
 Até aqui criamos o rg, a vnet, a subnet, o nsg. 
-então antes de criar a vm precisamos criar a nic e o ip publico a usar.
+Então antes de criar a vm precisamos criar a nic e o ip publico a usar.
 
 ```bash
 az network public-ip create --resource-group rgparticipante"x"   \
---name part1ippubback --allocation-method dynamic --idle-timeout 4
+--name pip-backpart”x” --allocation-method dynamic --idle-timeout 4
 
 az network nic create \
--n part1nicnameback \
+-n nic-backpart”x” \
 -g rgparticipante"x" \
---subnet Back \
---public-ip-address part1ippubback \
+--subnet back \
+--public-ip-address pip-backpart”x” \
 --vnet-name  uolhvnet"x"
 
 az vm create \
 --resource-group rgparticipante"x" \
---name part1vmback \
+--name vmback”x” \
 --image UbuntuLTS \
 --size Standard_DS1_v2 \
---nics part1nicname
---data-disk-sizes-gb 128 \ 
---admin-username participante1 \
+--nics nic-backpart”x” \
+--data-disk-sizes-gb 128 \
+--admin-username participante”x” \
 --admin-password Go010101you! \
 --authentication-type password
 ```
 
-### OBSERVAÇÃO: O disco apenas é adicionado a vm, mas nao é entregue formatado dentro do linux.
+### Observação: o disco apenas é adicionado a vm, mas nao é entregue formatado dentro do linux.
 
-7.1 ADICIONANDO O MYSQL (via stack LAMP)
+  	7.1 adicionando o mysql (via stack LAMP)
   
-```bash
 sudo apt update && sudo apt install lamp-server^
-```
- 
-7.2 TESTAR A CONEXÃO ENTRE AS VMs das Subnets Front e Back (via ip privado)
+  
+7.2 testar a conexão entre as vms das Subnets Front e Back (via ip privado)
 
-### 8. criar uma Custom Image usando CLI
+*** Não está coberto nesse workshop a configuração do MySQL. ***
 
-8.1 criando custom image no windows
 
-(executaremos esse step se tivermos tempo)
+8. criar uma Custom Image usando CLI
 
 8.2 criando custom image no linux
 
 8.2.1 criando uma nova VM para criarmos posteriormente sua imagem “generalizada”
 
 (há diferença entre Imagem Generalizada e Backup da Imagem)
+
 ```bash
 az network public-ip create --resource-group rgparticipante"x"   \
---name part1destroyip --allocation-method dynamic --idle-timeout 4
+--name pip-destroy”x” --allocation-method dynamic --idle-timeout 4
 
 az network nic create \
--n part1destroynic \
+-n nic-destroy”x” \
 -g rgparticipante"x" \
 --subnet front \
---public-ip-address part1destroyip \
+--public-ip-address pip-destroy”x” \
 --vnet-name  uolhvnet"x"
 
 az vm create \
 --resource-group rgparticipante"x" \
---name part1destroy \
+--name vmdestroy”x” \
 --image UbuntuLTS \
 --size Standard_DS1_v2 \
---nics part1destroynic
---admin-username participante"x" \
+--nics nic-destroy”x” \
+--admin-username participante”x” \
 --admin-password Go010101you! \
 --authentication-type password
-  ```
 
 8.2.2 preparando a VM para salvar a imagem
 
 (aplicar os comandos abaixo na VM que terá a imagem salva)
-```bash
+
 sudo waagent -deprovision+user –force
-```
 
 (a partir daqui, usar os comandos na sua workstation de trabalho)
-```bash
-az vm deallocate --resource-group rgparticipante"x" --name part1destroy
-az vm generalize --resource-group rgparticipante"x" --name part1destroy 
+
+az vm deallocate --resource-group rgparticipante"x" --name vmdestroy”x”
+az vm generalize --resource-group rgparticipante"x" --name vmdestroy”x”  
 az image create \
 --resource-group rgparticipante"x" \
---name imageteste \
---source part1destroy
-```
+--name imageteste”x” \
+--source vmdestroy”x”
 
 8.2.3 listando as imagens disponiveis
-```bash
+
 az image list \
-  --resource-group rgparticipante"x"
-```
+--resource-group rgparticipante"x"
   
  8.2.4 criar uma vm a partir de uma imagem salva
   
 (criaremos primeiro o ip público e a NIC como nas outras VMs)
-```bash
-az network public-ip create --resource-group rgparticipante"x"   \
---name vmfromimageip --allocation-method dynamic --idle-timeout 4
+
+ az network public-ip create --resource-group rgparticipante"x"   \
+--name pip-fromimg”x” --allocation-method dynamic --idle-timeout 4
 
 az network nic create \
--n vmfromimagenic \
+-n nic-fromimg”x”  \
 -g rgparticipante"x" \
 --subnet front \
---public-ip-address vmfromimageip \
+--public-ip-address pip-fromimg”x”  \
 --vnet-name  uolhvnet"x"
 
 az vm create \
---resource-group rgparticipante"x" \
---name vmfromimage \
---image <nomedaimagem> ou <enderecodaimagem> \
---size Standard_DS1_v2 \
---nics vmfromimagenic
---admin-username participante"x" \
---admin-password Go010101you! \
---authentication-type password
-```
+  --resource-group rgparticipante"x" \
+  --name vmfromimg”x” \
+  --image <nomedaimagem> ou <enderecodaimagem> \
+  --size Standard_DS1_v2 \
+  --nics nic-fromimg”x”  \
+  --admin-username participante"x" \
+  --admin-password Go010101you! \
+  --authentication-type password
   
- 8.2.5 deletando uma imagem
-```bash
+ ```
+
+8.2.5 deletando uma imagem
+
 az image delete \
 --name <nomedaimagem> \
 --resource-group rgparticipante"x"
-```
 
-### 9. criar GW para VPN (via Portal ou CLI)
+10. criar o servico backup de 1 VM em operacao (VM linux) via CLI e Portal
 
-(faremos esse passo se houver tempo)
+10.1 Criando o Vault de Backup via Portal
+https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vms 
 
-### 10. criar o servico backup de 1 VM em operacao (VM linux) via CLI e Portal
-
-10.1 Criando o Vault de Backup
-https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vms  
-
-(criado na VM Linux de Front, demonstrado no Portal)
+(será criado na VM Linux de Front, demonstrado no Portal)
 
 10.2 Criar um backup imediato (levará alguns minutos)
 
 10.3 Fazer um teste de Restore de um arquivo
 
-(Procedimento macro)
+(Procedimento macro – VIA PORTAL)
 1.	On your local computer, sign in to the Azure portal.
 2.	In the menu on the left, select Virtual machines.
 3.	From the list, select the VM.
@@ -484,37 +483,114 @@ https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vm
 
 10.5 execute o arquivo
 
-```bash
 chmod +x nomedoarquivo.sh
 ./<nome_arquivo>.sh
-```
 
-10.6 acesse o arquivo que necessita recuperar e copie o
+
+10.6 acesse o arquivo que necessita recuperar e copie o para alguma pasta
 
 (navegue pelo caminho onde está seu arquivo e faça a cópia. Abaixo apenas um exemplo)
 
-```bash
 sudo cp ~/discomontado/Volume1/var/www/html/index.nginx-debian.html /<diretório_a_ser_copiado>
-```
 
-### 11. Monitoramento básico da VM via Portal
+
+11. Monitoramento básico da VM via Portal
 
 (Explorar as opções de Métrica e Alertas)
 
-### 12. Segurança (Security Center)
+
+
+12. Segurança (Security Center)
 
 (Explorar via Portal)
 
-### 13. Outras opções dentro da VM
+13. Outras opções dentro da VM
 o	auto-shutdown
 o	disaster recovery (ver alternativa com ummanaged disk)
 o	redeploy
 	
-### 14. USANDO JENKINS
+LABs EXTRA
+
+14. criar uma VM Windows
+
+az network public-ip create --resource-group rgparticipante"x"   \
+--name pip-win”x” --allocation-method dynamic --idle-timeout 4
+
+az network nic create \
+-n nic-win”x” \
+-g rgparticipante"x" \
+--subnet front \
+--public-ip-address part1ippubfront \
+--vnet-name  uolhvnet"x"
+
+az vm create \
+--resource-group rgparticipante"x" \
+--name vmWINpart”x” \
+--os-disk-name diskwin”x” \
+--image win2016datacenter \
+--size Standard_DS1_v2 \
+--nics part1nicnamefront
+--data-disk-sizes-gb 128 \
+--admin-username participante1 \
+--admin-password Go010101you! \
+--authentication-type password
+
+
+15. criar uma Imagem baseada em Windows Server
+
+16. criar um cluster kubernetes como exemplo
+
+Referência:
+https://docs.microsoft.com/pt-br/azure/aks/kubernetes-walkthrough 
+
+17. adicionando Role customizado:
+
+Logando via Powershell
+
+Login-AzureRmAccount
+Select-AzureRmSubscription –SubscriptionName 'Microsoft Azure Internal Consumption' 
+
+$role = Get-AzureRmRoleDefinition "Contributor"
+$role.Id = $null
+$role.Name = "tudo menos deletar"
+$role.Description = "pode fazer tudo menos deletar recurso"
+$role.Actions.Clear()
+$role.Actions.Add("*")
+$role.NotActions.Add("*/delete")
+$role.AssignableScopes.Clear()
+$role.AssignableScopes.Add("/subscriptions/560c947d-7c94-4413-a569-e391f56128a0")
+New-AzureRmRoleDefinition -Role $role
+
+#Listar roles
+Get-AzureRmRoleDefinition | FT Name, Description
+
+18. criar uma arquitetura Altamente disponível com Availability Set e Load Balancer
+
+
+
+
+
+
+
+
+
+
+
+Implementação de duas VMs CentOS (em um mesmo Availability Set) com servidor web Apache, usando load balancer externo com NAT para SSH (portas 50001, 50002).
+https://github.com/matiasma/azureeverywhere
+(material criado e cedido pelo Marcelo Matias)
+
+
+19. Criar um VPN Gateway e configurar uma conexão P2S (Point to Site)
+
+Referência:
+https://docs.microsoft.com/en-us/azure/vpn-gateway/vpn-gateway-howto-point-to-site-resource-manager-portal 
+
+20. USANDO JENKINS
 
 Referência:
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-jenkins-github-docker-cicd 
-	
+		
 PASSOS MACROS:
 		
 1.	Create a Jenkins VM
@@ -524,16 +600,14 @@ PASSOS MACROS:
 5.	Create a Docker image for your app
 6.	Verify GitHub commits build new Docker image and updates running app
 		
-14.1 Create a Jenkins VM
+20.1 Create a Jenkins VM
 
-14.1.1 Criar o arquivo cloud-init-jenkins.txt
+20.1.1 Criar o arquivo cloud-init-jenkins.txt
 
 OBSERVAÇÃO:
 o arquivo cloud-init-jenkins.txt devera estar no local em que será rodado o comando “az vm create ... “
 
 CONTEÚDO DO ARQUIVO:
-
-```bash
 
 #cloud-config
 package_upgrade: true
@@ -556,38 +630,36 @@ runcmd:
   - usermod -aG docker azureuser
   - usermod -aG docker jenkins
   - service jenkins restart
-```
+
 		
-14.1.2 criando a VM para o Jenkins
+20.1.2 criando a VM para o Jenkins
 
-```bash
-	az network public-ip create --resource-group rgparticipante"x"   \
-     --name part1jenkinsip --allocation-method dynamic --idle-timeout 4
 
-    	az network nic create \
-       -n part1jenkinsnic \
-       -g rgparticipante"x" \
-       --subnet manag \
-       --public-ip-address part1jenkinsip \
-       --vnet-name  uolhvnet"x"
+az network public-ip create --resource-group rgparticipante"x"   \
+--name jenkinsip”x” --allocation-method dynamic --idle-timeout 4
+
+az network nic create \
+-n jenkinsnic”x” \
+-g rgparticipante"x" \
+--subnet manag \
+--public-ip-address jenkinsip”x”  \
+--vnet-name  uolhvnet"x"
 
 az vm create \
-  	--resource-group rgparticipante"x" \
-  	--name part1jenkinsvm \
-  	--image UbuntuLTS \
-  	--size Standard_DS1_v2 \
-  	--nics part1jenkinsnic \
-  	--admin-username participante1 \
-  	--admin-password Go010101you! \
-  	--authentication-type password \
-  	--custom-data cloud-init-jenkins.txt
-```
+--resource-group rgparticipante"x" \
+--name part1jenkinsvm \
+--image UbuntuLTS \
+--size Standard_DS1_v2 \
+--nics jenkinsnic”x”  \
+--admin-username participante1 \
+--admin-password Go010101you! \
+--authentication-type password \
+--custom-data cloud-init-jenkins.txt
+
   
-14.1.3 liberando as portas para o Jenkins e Node.js
+20.1.3 liberando as portas para o Jenkins e Node.js
    
 (8080 liberado na subnet manag via NSG)
-
-```bash
 
 az network nsg rule create \
 --resource-group rgparticipante"x" \
@@ -601,11 +673,9 @@ az network nsg rule create \
 --source-port-range "*" \
 --destination-address-prefix "*" \
 --destination-port-range 8080
-```
+
 
 (1337 liberado na subnet manag via NSG)
-
-```bash
 
 az network nsg rule create \
 --resource-group rgparticipante"x" \
@@ -619,40 +689,14 @@ az network nsg rule create \
 --source-port-range "*" \
 --destination-address-prefix "*" \
 --destination-port-range 1337
-```
 
-14.1.4. Adquirindo a senha inicial do Jenkins
-```bash
+
+20.1.4. Adquirindo a senha inicial do Jenkins
+
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-```
 
 Continua em:
 https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-jenkins-github-docker-cicd 
- 
-## LAB EXTRA
-
-### 15. criar um cluster kubernetes como exemplo
-
-Referência:
-https://docs.microsoft.com/pt-br/azure/aks/kubernetes-walkthrough 
-
-```bash
-az provider register -n Microsoft.ContainerService
-az group create --name myResourceGroup --location eastus
-az aks create --resource-group myResourceGroup --name myK8sCluster --node-count 1 --generate-ssh-keys
-az aks install-cli
-az aks get-credentials --resource-group myResourceGroup --name myK8sCluster
-kubectl get nodes
-kubectl create -f azure-vote.yml
-```
-
-### 16. criar uma arquitetura Altamente disponível com Availability Set e Load Balancer
-
-Implementação de duas VMs CentOS (em um mesmo Availability Set) com servidor web Apache, usando load balancer externo com NAT para SSH (portas 50001, 50002).
-
-https://github.com/matiasma/azureeverywhere
-
-### (material criado e cedido pelo Marcelo Matias)
 
 
 
