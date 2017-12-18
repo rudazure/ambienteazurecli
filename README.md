@@ -43,9 +43,11 @@ Senha: Go010101you!
 	az account show (para verificar se está selecionado a subscription correta)
 
 OPCIONAL:
+	
 	az account list --output table (caso queira listar todas subscriptions)
 
 CASO TENHA MAIS DE UMA SUBSCRIÇÃO E A QUE PRETENDE USAR NÃO É A DEFAULT:
+
 	az account set --subscription "<nome_subscription> ou <ID>" (para selecionar subscription com base no nome ou ID)
 	
 ### OBSERVAÇÃO: caso necessite rodar no Windows:
@@ -494,11 +496,11 @@ https://docs.microsoft.com/en-us/azure/virtual-machines/linux/tutorial-backup-vm
 (Explorar via Portal)
 
 ### 13. Outras opções dentro da VM
-o	auto-shutdown
-o	disaster recovery (ver alternativa com ummanaged disk)
-o	redeploy
+	auto-shutdown
+	disaster recovery (ver alternativa com ummanaged disk)
+	redeploy
 	
-## LABs EXTRA
+## LABs EXTRAs
 
 ### 14. criar uma VM Windows
 
@@ -563,8 +565,10 @@ https://docs.microsoft.com/en-us/azure/active-directory/role-based-access-contro
 (ver figura)
 
 Implementação de duas VMs CentOS (em um mesmo Availability Set) com servidor web Apache, usando load balancer externo com NAT para SSH (portas 50001, 50002).
+
 https://github.com/matiasma/azureeverywhere
-(material criado e cedido pelo Marcelo Matias)
+
+### (material criado e cedido pelo Marcelo Matias)
 
 
 ### 19. Criar um VPN Gateway e configurar uma conexão P2S (Point to Site)
@@ -590,7 +594,7 @@ PASSOS MACROS:
 
 20.1.1 Criar o arquivo cloud-init-jenkins.txt
 
-OBSERVAÇÃO:
+### OBSERVAÇÃO:
 o arquivo cloud-init-jenkins.txt devera estar no local em que será rodado o comando “az vm create ... “
 
 CONTEÚDO DO ARQUIVO:
