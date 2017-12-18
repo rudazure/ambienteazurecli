@@ -60,6 +60,8 @@ https://blogs.msdn.microsoft.com/commandline/2016/04/06/bash-on-ubuntu-on-window
 ### 2. criar via CLI o RG : rgparticipante"x"
 
 	az group create --name rgparticipante"x" --location eastus
+	
+### *** Usuário de 1 a 5 usará eastus. De 6 a 11 usará westus. ***
 
 	
 ### 3. criar via CLI a VNET, SUBNET (manag, front, back)
